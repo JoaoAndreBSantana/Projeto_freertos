@@ -41,11 +41,11 @@ void Led(void *pvParameters) {
 
 // Tarefa para processar o estado do botão e notificar a tarefa do LED
 void Process(void *pvParameters) {
-    TaskHandle_t *ledTaskHandle = (TaskHandle_t *)pvParameters;
+    TaskHandle_t *ledTaskHandle = (TaskHandle_t)pvParameters;
     for (;;) {
         if (botao_est == 1) {
             printf("Botao pressionado!!! notificando tarefa do LED\n"); // Imprimir evento de notificação
-            xTaskNotifyGive(*ledTaskHandle); // Notificar a tarefa do LED para ligar o LED
+            xTaskNotifyGive(ledTaskHandle); // Notificar a tarefa do LED para ligar o LED
         }    vTaskDelay(pdMS_TO_TICKS(100)); // Verificar a cada 100ms
     }
 }
@@ -63,9 +63,9 @@ int main() {
     gpio_pull_up(BUTTON_PIN);
 
     // tarefas
-    xTaskCreate(verifica_botao, "Tarefa do Botao", 128, NULL, 1, NULL);     
-    xTaskCreate(Process, "Tarefa de Processamento", 128, (void*)&ledTaskHandle, 2, NULL);  
     xTaskCreate(Led, "Tarefa do LED", 128, NULL, 3, &ledTaskHandle);        
+    xTaskCreate(Process, "Tarefa de Processamento", 128, (void*)ledTaskHandle, 2, NULL);  
+    xTaskCreate(verifica_botao, "Tarefa do Botao", 128, NULL, 1, NULL);     
 
     // Iniciar o escalonador do FreeRTOS
     vTaskStartScheduler();
