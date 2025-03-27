@@ -64,7 +64,7 @@ int main() {
 
     // tarefas
     xTaskCreate(Led, "Tarefa do LED", 128, NULL, 3, &ledTaskHandle);        
-    xTaskCreate(Process, "Tarefa de Processamento", 128, (void*)ledTaskHandle, 2, NULL);  
+    xTaskCreate(Process, "Tarefa de Processamento", 128, (void*)&ledTaskHandle, 2, NULL);  
     xTaskCreate(verifica_botao, "Tarefa do Botao", 128, NULL, 1, NULL);     
 
     // Iniciar o escalonador do FreeRTOS
